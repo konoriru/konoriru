@@ -1,9 +1,9 @@
 1. Настройка ВМ
-172.18.0.1/24(внешняя сеть)
-192.168.1.1/24(внутренняя сеть)
-на opennebula /etc/sysctl.conf net.ipv4.ip_forward=1
-sysctl -p
-iptables -t nat -A POSTROUTING -j MASQUERADE -o ens3 -s 192.168.1.0/24 iptables-save > /root/rules or /etc/iptables/rules.v4
+2. 172.18.0.1/24(внешняя сеть)
+3. 192.168.1.1/24(внутренняя сеть)
+4. на opennebula /etc/sysctl.conf net.ipv4.ip_forward=1
+5. sysctl -p
+6. iptables -t nat -A POSTROUTING -j MASQUERADE -o ens3 -s 192.168.1.0/24 iptables-save > /root/rules or /etc/iptables/rules.v4
 crontab -e @reboot /sbin/iptables-restore < /root/rules
 В VR настраиваем сеть, пишем в /etc/systemd/resolv.conf nameserver 8.8.8.8
 на всех машинах с дебиан rm /run/systemd/network/10-netplan-all-en.network и apt purge netplan.io -y
