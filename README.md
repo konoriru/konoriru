@@ -4,27 +4,27 @@
 4. на opennebula /etc/sysctl.conf net.ipv4.ip_forward=1
 5. sysctl -p
 6. iptables -t nat -A POSTROUTING -j MASQUERADE -o ens3 -s 192.168.1.0/24 iptables-save > /root/rules or /etc/iptables/rules.v4
-crontab -e @reboot /sbin/iptables-restore < /root/rules
-В VR настраиваем сеть, пишем в /etc/systemd/resolv.conf nameserver 8.8.8.8
-на всех машинах с дебиан rm /run/systemd/network/10-netplan-all-en.network и apt purge netplan.io -y
-/etc/systemd/network/wire.network во внешней сети прописываем gateway и dns, во внутренней:
-[Router]
-Destination=0.0.0.0/0
-Gateway=192.168.1.1/24
-Metric=0
-на vr прописываем iptables -t nat -A POSTROUTING -s 172.18.0.0/24 -o ens4(или другой) -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o ens4(или другой) -j MASQUERADE
-#На VM3 пишем iptables -t nat -A POSTROUTING -o ens3(или другой интерфейс, не altname) -j MASQUERADE
-Обновляем пакеты и устанавливаем утилиты на каждую машину
-Настройка
+6. crontab -e @reboot /sbin/iptables-restore < /root/rules
+7. В VR настраиваем сеть, пишем в /etc/systemd/resolv.conf nameserver 8.8.8.8
+8. на всех машинах с дебиан rm /run/systemd/network/10-netplan-all-en.network и apt purge netplan.io -y
+9. /etc/systemd/network/wire.network во внешней сети прописываем gateway и dns, во внутренней:
+10. [Router]
+11. Destination=0.0.0.0/0
+12. Gateway=192.168.1.1/24
+13. Metric=0
+14. на vr прописываем iptables -t nat -A POSTROUTING -s 172.18.0.0/24 -o ens4(или другой) -j MASQUERADE
+15. iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o ens4(или другой) -j MASQUERADE
+16. На VM3 пишем iptables -t nat -A POSTROUTING -o ens3(или другой интерфейс, не altname) -j MASQUERADE
+17. Обновляем пакеты и устанавливаем утилиты на каждую машину
+18. Настройка
 2. Настройка ssh
-Устанавливаем на все машины openssh-server, заходим в /etc/ssh/sshd_config и убираем # с PermitRootLogin yes и PasswordAuthentication yes
-Перезапускаем ssh
-Создаем пользователей user (useradd user, usermod -aG sudo user) и добавляем пользователя в visudo (user ALL=(ALL) NOPASSWD: ALL)
-Пишем ssh-copy-id user@ip-адрес машины
-3. db
-Если не хватает памяти пишем команды growpart /dev/sda 1 и resize2fs /dev/sda1
-3. Настройка Postgresql
+Устанавливаем на все машины openssh-server, заходим в /etc/ssh/sshd_config и убираем # с PermitRootLogin yes и PasswordAuthentication yes  
+Перезапускаем ssh  
+Создаем пользователей user (useradd user, usermod -aG sudo user) и добавляем пользователя в visudo (user ALL=(ALL) NOPASSWD: ALL)  
+Пишем ssh-copy-id user@ip-адрес машины  
+3. db  
+Если не хватает памяти пишем команды growpart /dev/sda 1 и resize2fs /dev/sda1  
+3. Настройка Postgresql  
 <hr>
 apt install postgresql postgresql-contrib su - postgres create user -P --interactive devops n y y psql CREATE DETEBASE test OWNER devops; |
 
